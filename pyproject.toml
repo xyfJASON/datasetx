@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image_datasets"
+version = "0.0.1"
+authors = [
+  { name="xyfJASON", email="xyfjason@gmail.com" },
+]
+description = "Build image datasets based on torch and torchvision"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/xyfJASON/image-datasets"
+"Bug Tracker" = "https://github.com/xyfJASON/image-datasets/issues"
