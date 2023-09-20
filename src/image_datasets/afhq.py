@@ -5,7 +5,7 @@ from typing import Optional, Callable
 import torchvision.transforms as T
 from torch.utils.data import Dataset
 
-from utils import extract_images
+from .utils import extract_images
 
 
 class AFHQ(Dataset):
