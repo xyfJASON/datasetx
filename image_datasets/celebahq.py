@@ -1,5 +1,4 @@
 import os
-import shutil
 from PIL import Image
 from typing import Optional, Callable
 
@@ -19,8 +18,8 @@ class CelebAHQ(Dataset):
     files from the official GitHub repository. Then use dataset_tool.py to generate the high-quality images.
 
     However, I personally recommend downloading the CelebAMask-HQ dataset, which contains processed CelebA-HQ images.
-    The file names in CelebAMask-HQ are sorted from 0 to 29999, which is inconsistent with the original CelebA file
-    names. This class will automatically check and convert the file names to the original CelebA file names.
+    Nevertheless, the filenames in CelebAMask-HQ are sorted from 0 to 29999, which is inconsistent with the original
+    CelebA filenames. I provide a python script (scripts/celebahq_map_filenames.py) to help convert the filenames.
 
     To load data with this class, the dataset should be organized in the following structure:
 
@@ -66,9 +65,6 @@ class CelebAHQ(Dataset):
         if transform is None:
             self.transform = self.get_transform()
 
-        self.img_paths = extract_images(image_root)
-        self.map_filenames()
-
         def filter_func(p):
             if split == 'all':
                 return True
@@ -76,6 +72,7 @@ class CelebAHQ(Dataset):
             k = 0 if split == 'train' else (1 if split == 'valid' else 2)
             return celeba_splits[k] <= int(os.path.splitext(os.path.basename(p))[0]) < celeba_splits[k+1]
 
+        self.img_paths = extract_images(image_root)
         self.img_paths = list(filter(filter_func, self.img_paths))
 
     def __len__(self):
@@ -101,28 +98,6 @@ class CelebAHQ(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-    def map_filenames(self):
-        filenames = [int(os.path.splitext(os.path.basename(p))[0]) for p in self.img_paths]
-        if list(sorted(filenames)) == list(range(30000)):
-            print('Mapping CelebAMask-HQ filenames to CelebA filenames...')
-            import pandas as pd
-            mapping = pd.read_table(os.path.join(self.root, 'CelebA-HQ-to-CelebA-mapping.txt'), sep=r'\s+', index_col=0)
-            mapping_dict = {f'{i}.jpg': mapping.iloc[i]['orig_file'] for i in range(30000)}
-            # Create a new directory `root/CelebA-HQ-img-tmp` to store the renamed images
-            os.makedirs(os.path.join(self.root, 'CelebA-HQ-img-tmp'), exist_ok=True)
-            for key, value in mapping_dict.items():
-                if not os.path.isfile(os.path.join(self.root, 'CelebA-HQ-img', key)):
-                    # If file not found, remove the temporary directory and raise an error
-                    shutil.rmtree(os.path.join(self.root, 'CelebA-HQ-img-tmp'))
-                    raise ValueError(f"{os.path.join(self.root, 'CelebA-HQ-img', key)} does not exist")
-                # Copy the file to the temporary directory
-                shutil.copy(os.path.join(self.root, 'CelebA-HQ-img', key),
-                            os.path.join(self.root, 'CelebA-HQ-img-tmp', value))
-            # Backup the original directory and rename the temporary directory
-            shutil.move(os.path.join(self.root, 'CelebA-HQ-img'), os.path.join(self.root, 'CelebA-HQ-img-backup'))
-            shutil.move(os.path.join(self.root, 'CelebA-HQ-img-tmp'), os.path.join(self.root, 'CelebA-HQ-img'))
-            self.img_paths = extract_images(os.path.join(self.root, 'CelebA-HQ-img'))
 
 
 if __name__ == '__main__':
