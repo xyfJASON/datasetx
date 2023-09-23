@@ -84,7 +84,7 @@ class FFHQ(Dataset):
         return X
 
     def get_transform(self):
-        flip_p = 0.5 if self.split == 'train' else 0.0
+        flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
         if self.transform_type in ['default', 'resize']:
             transform = T.Compose([
                 T.Resize((self.img_size, self.img_size)),
