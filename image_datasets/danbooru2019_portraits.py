@@ -11,13 +11,16 @@ from .utils import extract_images
 class Danbooru2019Portraits(Dataset):
     """The Danbooru2019 Portraits Dataset.
 
+    The original images have black edges, which can be removed by the provided python script at
+    scripts/danbooru_remove_black_edges.py. Note that some images (with too wide black edges) will
+    be discarded after processing.
+
     To load data with this class, the dataset should be organized in the following structure:
 
     root
-    └── portraits       (contains 302,652 images)
+    └── portraits    (contains 302,652 images before processing or 242,065 images after processing)
         ├── 10000310.jpg
-        ├── ...
-        └── 9999900.jpg
+        └── ...
 
     This class has one pre-defined transform:
       - 'resize' (default): Resize the image directly to the target size

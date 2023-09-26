@@ -5,7 +5,11 @@ This package extends `torchvision.datasets` in the following ways:
  - For datasets already existing in `torchvision.datasets`, adds a wrapper class with pre-defined data transforms. The transform can be selected by a string argument `transform_type`. This helps to instantiate datasets with configuration files.
 
 For now, the following datasets are supported:
- - [MNIST](http://yann.lecun.com/exdb/mnist/)
- - [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)
- - [FFHQ](https://github.com/NVlabs/ffhq-dataset)
  - [AFHQ](https://github.com/clovaai/stargan-v2)
+ - [CelebA](http://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)
+ - [CelebA-HQ](https://github.com/tkarras/progressive_growing_of_gans)
+ - [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)
+ - [Danbooru2019 Portraits](https://gwern.net/crop#danbooru2019-portraits)
+ - [FFHQ](https://github.com/NVlabs/ffhq-dataset)
+ - [ImageNet (ILSVRC2012)](https://image-net.org/challenges/LSVRC/2012/2012-downloads.php)
+ - [MNIST](http://yann.lecun.com/exdb/mnist/)
