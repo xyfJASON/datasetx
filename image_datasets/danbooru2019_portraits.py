@@ -18,7 +18,7 @@ class Danbooru2019Portraits(Dataset):
     To load data with this class, the dataset should be organized in the following structure:
 
     root
-    └── portraits    (contains 302,652 images before processing or 242,065 images after processing)
+    └── portraits
         ├── 10000310.jpg
         └── ...
 

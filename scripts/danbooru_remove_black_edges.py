@@ -9,10 +9,10 @@ Before processing:
 
 After processing:
     root
-    ├── portraits           (contains 242,065 images if args.portion == 0.075)
+    ├── portraits           (contains 232,885 images under default arguments)
     │   ├── 10000310.jpg
     │   ├── ...
-    │   └── 9999900.jpg
+    │   └── 9999800.jpg
     └── portraits-backup    (contains 302,652 images)
         ├── 10000310.jpg
         ├── ...
@@ -30,15 +30,26 @@ from tqdm import tqdm
 import multiprocessing as mp
 
 
+def get_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--root', type=str, required=True, help='Root directory of Danbooru2019Portraits')
+    parser.add_argument('--n_processes', type=int, help='Number of processes. Default to be cpu numbers')
+    parser.add_argument('--portion', type=float, default=0.075,
+                        help='Only crop and save images whose black edges width / image width < portion')
+    parser.add_argument('--threshold', type=int, default=50,
+                        help='Pixel values less than threshold are viewed as black')
+    return parser
+
+
 def count_edge(img):
     up, down, left, right = 0, 0, 0, 0
-    while np.mean(img[up, :, :]) == 0:
+    while up < img.shape[0] and np.mean(img[up, :, :]) <= args.threshold:
         up += 1
-    while np.mean(img[img.shape[0] - 1 - down, :, :]) == 0:
+    while down < img.shape[0] and np.mean(img[img.shape[0] - 1 - down, :, :]) <= args.threshold:
         down += 1
-    while np.mean(img[:, left, :]) == 0:
+    while left < img.shape[1] and np.mean(img[:, left, :]) <= args.threshold:
         left += 1
-    while np.mean(img[:, img.shape[1] - 1 - right, :]) == 0:
+    while right < img.shape[1] and np.mean(img[:, img.shape[1] - 1 - right, :]) <= args.threshold:
         right += 1
     return up, down, left, right
 
@@ -56,17 +67,14 @@ def func(img_path):
 
 if __name__ == '__main__':
     # Arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--root', type=str, required=True, help='Root directory of Danbooru2019Portraits')
-    parser.add_argument('--portion', type=float, default=0.075,
-                        help='Only crop and save images whose black edges width / image width < portion')
-    parser.add_argument('--n_processes', type=int, help='Number of processes. Default to be cpu numbers')
-    args = parser.parse_args()
+    args = get_parser().parse_args()
     args.root = os.path.expanduser(args.root)
     args.n_processes = args.n_processes or mp.cpu_count()
     print(f'Using {args.n_processes} processes')
 
     # Create a new directory `root/portraits-tmp` to store the renamed images
+    if not os.path.isdir(os.path.join(args.root, 'portraits')):
+        raise NotADirectoryError(f'`{os.path.join(args.root, "portraits")}` does not exist')
     os.makedirs(os.path.join(args.root, 'portraits-tmp'), exist_ok=True)
     img_paths = glob.glob(os.path.join(args.root, 'portraits', '*.jpg'))
 
