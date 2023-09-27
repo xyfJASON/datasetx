@@ -97,12 +97,3 @@ class FFHQ(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = FFHQ(root='~/data/FFHQ/', img_size=256, split='train')
-    print(len(dataset))
-    dataset = FFHQ(root='~/data/FFHQ/', img_size=256, split='test')
-    print(len(dataset))
-    dataset = FFHQ(root='~/data/FFHQ/', img_size=256, split='all')
-    print(len(dataset))

@@ -93,12 +93,3 @@ class ImageNet(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = ImageNet(root='~/data/ImageNet/', img_size=256, split='train')
-    print(len(dataset))
-    dataset = ImageNet(root='~/data/ImageNet/', img_size=256, split='valid')
-    print(len(dataset))
-    dataset = ImageNet(root='~/data/ImageNet/', img_size=256, split='test')
-    print(len(dataset))

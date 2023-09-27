@@ -61,10 +61,3 @@ class CIFAR10(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = CIFAR10(root='~/data/CIFAR-10/', img_size=64, split='train')
-    print(len(dataset))
-    dataset = CIFAR10(root='~/data/CIFAR-10/', img_size=64, split='test')
-    print(len(dataset))

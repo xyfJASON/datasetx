@@ -58,10 +58,3 @@ class MNIST(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = MNIST(root='~/data/MNIST/', img_size=32, split='train')
-    print(len(dataset))
-    dataset = MNIST(root='~/data/MNIST/', img_size=32, split='test')
-    print(len(dataset))

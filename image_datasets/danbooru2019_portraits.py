@@ -72,8 +72,3 @@ class Danbooru2019Portraits(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = Danbooru2019Portraits(root='~/data/Danbooru2019/', img_size=256)
-    print(len(dataset))

@@ -85,14 +85,3 @@ class CelebA(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = CelebA(root='~/data/CelebA/', img_size=64, split='train')
-    print(len(dataset))
-    dataset = CelebA(root='~/data/CelebA/', img_size=64, split='valid')
-    print(len(dataset))
-    dataset = CelebA(root='~/data/CelebA/', img_size=64, split='test')
-    print(len(dataset))
-    dataset = CelebA(root='~/data/CelebA/', img_size=64, split='all')
-    print(len(dataset))

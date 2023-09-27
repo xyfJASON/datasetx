@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "image_datasets"
-version = "0.0.1"
+version = "2023.9.27.dev0"
 authors = [
   { name="xyfJASON", email="xyfjason@gmail.com" },
 ]

@@ -98,14 +98,3 @@ class CelebAHQ(Dataset):
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
         return transform
-
-
-if __name__ == '__main__':
-    dataset = CelebAHQ(root='~/data/CelebA-HQ/', img_size=256, split='train')
-    print(len(dataset))
-    dataset = CelebAHQ(root='~/data/CelebA-HQ/', img_size=256, split='valid')
-    print(len(dataset))
-    dataset = CelebAHQ(root='~/data/CelebA-HQ/', img_size=256, split='test')
-    print(len(dataset))
-    dataset = CelebAHQ(root='~/data/CelebA-HQ/', img_size=256, split='all')
-    print(len(dataset))
