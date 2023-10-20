@@ -6,6 +6,7 @@ from .danbooru2019_portraits import Danbooru2019Portraits
 from .ffhq import FFHQ
 from .imagenet import ImageNet
 from .mnist import MNIST
+from .svhn import SVHN
 
 __all__ = [
     'AFHQ',
@@ -16,4 +17,5 @@ __all__ = [
     'FFHQ',
     'ImageNet',
     'MNIST',
+    'SVHN',
 ]

@@ -79,6 +79,7 @@ if __name__ == '__main__':
     img_paths = glob.glob(os.path.join(args.root, 'portraits', '*.jpg'))
 
     # Multiprocessing
+    mp.set_start_method("fork")
     pool = mp.Pool(processes=args.n_processes)
     for _ in tqdm(pool.imap(func, img_paths), total=len(img_paths)):
         pass

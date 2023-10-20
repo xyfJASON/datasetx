@@ -13,3 +13,4 @@ For now, the following datasets are supported:
  - [FFHQ](https://github.com/NVlabs/ffhq-dataset)
  - [ImageNet (ILSVRC2012)](https://image-net.org/challenges/LSVRC/2012/2012-downloads.php)
  - [MNIST](http://yann.lecun.com/exdb/mnist/)
+ - [SVHN](http://ufldl.stanford.edu/housenumbers/)
