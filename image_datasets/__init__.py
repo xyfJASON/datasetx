@@ -1,6 +1,7 @@
 from .afhq import AFHQ
 from .celeba import CelebA
 from .celebahq import CelebAHQ
+from .celebamask_hq import CelebAMaskHQ
 from .cifar10 import CIFAR10
 from .danbooru2019_portraits import Danbooru2019Portraits
 from .ffhq import FFHQ
@@ -12,6 +13,7 @@ __all__ = [
     'AFHQ',
     'CelebA',
     'CelebAHQ',
+    'CelebAMaskHQ',
     'CIFAR10',
     'Danbooru2019Portraits',
     'FFHQ',
