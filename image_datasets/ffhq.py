@@ -87,7 +87,7 @@ class FFHQ(Dataset):
         flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
         if self.transform_type in ['default', 'resize']:
             transform = T.Compose([
-                T.Resize((self.img_size, self.img_size)),
+                T.Resize((self.img_size, self.img_size), antialias=True),
                 T.RandomHorizontalFlip(flip_p),
                 T.ToTensor(),
                 T.Normalize([0.5] * 3, [0.5] * 3),

@@ -62,7 +62,7 @@ class Danbooru2019Portraits(Dataset):
     def get_transform(self):
         if self.transform_type in ['default', 'resize']:
             transform = T.Compose([
-                T.Resize((self.img_size, self.img_size)),
+                T.Resize((self.img_size, self.img_size), antialias=True),
                 T.RandomHorizontalFlip(0.5),
                 T.ToTensor(),
                 T.Normalize([0.5] * 3, [0.5] * 3),
