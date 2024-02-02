@@ -24,16 +24,17 @@ class FFHQ(Dataset):
     structure:
 
     root
+    ├── ffhq-dataset-v2.json
+    ├── LICENSE.txt
+    ├── README.txt
+    ├── thumbnails128x128
+    │   ├── 00000.png
+    │   ├── ...
+    │   └── 69999.png
     └── images1024x1024
-        ├── 00000
-        │   ├── 00000.png
-        │   ├── ...
-        │   └── 00999.png
+        ├── 00000.png
         ├── ...
-        └── 69000
-            ├── 69000.png
-            ├── ...
-            └── 69999.png
+        └── 69999.png
 
     This class has one pre-defined transform:
       - 'resize' (default): Resize the image directly to the target size
@@ -50,19 +51,23 @@ class FFHQ(Dataset):
             root: str,
             img_size: int,
             split: str = 'train',
-            original_size: int = 1024,
+            version: str = 'images1024x1024',
             transform_type: str = 'default',
             transform: Optional[Callable] = None,
     ):
         if split not in ['train', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
+        if version not in ['images1024x1024', 'thumbnails128x128']:
+            raise ValueError(f'Invalid version: {version}')
+
         root = os.path.expanduser(root)
-        image_root = os.path.join(root, f'images{original_size}x{original_size}')
+        image_root = os.path.join(root, version)
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
 
         self.img_size = img_size
         self.split = split
+        self.version = version
         self.transform_type = transform_type
         self.transform = transform
         if transform is None:
@@ -70,9 +75,9 @@ class FFHQ(Dataset):
 
         self.img_paths = extract_images(image_root)
         if split == 'train':
-            self.img_paths = list(filter(lambda p: '00000' <= (os.path.dirname(p)).split('/')[-1] < '60000', self.img_paths))
+            self.img_paths = list(filter(lambda p: 0 <= int(os.path.basename(p).split('.')[0]) < 60000, self.img_paths))
         elif split == 'test':
-            self.img_paths = list(filter(lambda p: '60000' <= (os.path.dirname(p)).split('/')[-1] < '70000', self.img_paths))
+            self.img_paths = list(filter(lambda p: 60000 <= int(os.path.basename(p).split('.')[0]) < 70000, self.img_paths))
 
     def __len__(self):
         return len(self.img_paths)
