@@ -23,13 +23,15 @@ class CelebA(Dataset):
             img_size: int,
             split: str = 'train',
             target_type: Union[List[str], str] = "attr",
-            transform_type: str = 'default',
+            transform_type: Optional[str] = 'stylegan-like',
             transform: Optional[Callable] = None,
             target_transform: Optional[Callable] = None,
             download: bool = False,
     ):
         if split not in ['train', 'valid', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
+        if transform_type not in ['stylegan-like', 'resize', 'crop140', 'none'] and transform_type is not None:
+            raise ValueError(f'Invalid transform_type: {transform_type}')
 
         self.img_size = img_size
         self.split = split
@@ -55,7 +57,7 @@ class CelebA(Dataset):
 
     def get_transform(self):
         flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
-        if self.transform_type in ['default', 'stylegan-like']:
+        if self.transform_type == 'stylegan-like':
             # https://github.com/NVlabs/stylegan/blob/master/dataset_tool.py#L484-L499
             cx, cy = 89, 121
             transform = T.Compose([
@@ -80,7 +82,7 @@ class CelebA(Dataset):
                 T.ToTensor(),
                 T.Normalize([0.5] * 3, [0.5] * 3),
             ])
-        elif self.transform_type == 'none':
+        elif self.transform_type == 'none' or self.transform_type is None:
             transform = None
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')

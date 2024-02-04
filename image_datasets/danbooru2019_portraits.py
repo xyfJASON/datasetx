@@ -34,9 +34,12 @@ class Danbooru2019Portraits(Dataset):
             self,
             root: str,
             img_size: int,
-            transform_type: str = 'default',
+            transform_type: Optional[str] = 'resize',
             transform: Optional[Callable] = None,
     ):
+        if transform_type not in ['resize', 'none'] and transform_type is not None:
+            raise ValueError(f'Invalid transform_type: {transform_type}')
+
         root = os.path.expanduser(root)
         image_root = os.path.join(root, 'portraits')
         if not os.path.isdir(image_root):
@@ -60,14 +63,14 @@ class Danbooru2019Portraits(Dataset):
         return X
 
     def get_transform(self):
-        if self.transform_type in ['default', 'resize']:
+        if self.transform_type == 'resize':
             transform = T.Compose([
                 T.Resize((self.img_size, self.img_size), antialias=True),
                 T.RandomHorizontalFlip(0.5),
                 T.ToTensor(),
                 T.Normalize([0.5] * 3, [0.5] * 3),
             ])
-        elif self.transform_type == 'none':
+        elif self.transform_type == 'none' or self.transform_type is None:
             transform = None
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')

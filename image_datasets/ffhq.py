@@ -52,13 +52,15 @@ class FFHQ(Dataset):
             img_size: int,
             split: str = 'train',
             version: str = 'images1024x1024',
-            transform_type: str = 'default',
+            transform_type: Optional[str] = 'resize',
             transform: Optional[Callable] = None,
     ):
         if split not in ['train', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
         if version not in ['images1024x1024', 'thumbnails128x128']:
             raise ValueError(f'Invalid version: {version}')
+        if transform_type not in ['resize', 'none'] and transform_type is not None:
+            raise ValueError(f'Invalid transform_type: {transform_type}')
 
         root = os.path.expanduser(root)
         image_root = os.path.join(root, version)
@@ -90,14 +92,14 @@ class FFHQ(Dataset):
 
     def get_transform(self):
         flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
-        if self.transform_type in ['default', 'resize']:
+        if self.transform_type == 'resize':
             transform = T.Compose([
                 T.Resize((self.img_size, self.img_size), antialias=True),
                 T.RandomHorizontalFlip(flip_p),
                 T.ToTensor(),
                 T.Normalize([0.5] * 3, [0.5] * 3),
             ])
-        elif self.transform_type == 'none':
+        elif self.transform_type == 'none' or self.transform_type is None:
             transform = None
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')

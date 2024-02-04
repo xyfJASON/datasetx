@@ -63,11 +63,14 @@ class CelebAMaskHQ(Dataset):
             root: str,
             img_size: int,
             split: str = 'train',
-            transform_type: str = 'default',
+            transform_type: Optional[str] = 'resize',
             transform: Optional[Callable] = None,
     ):
         if split not in ['train', 'valid', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
+        if transform_type not in ['resize', 'none'] and transform_type is not None:
+            raise ValueError(f'Invalid transform_type: {transform_type}')
+
         root = os.path.expanduser(root)
         image_root = os.path.join(root, 'CelebA-HQ-img')
         mask_root = os.path.join(root, 'CelebAMask-HQ-mask')
@@ -122,14 +125,14 @@ class CelebAMaskHQ(Dataset):
 
     def get_transform(self):
         flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
-        if self.transform_type in ['default', 'resize']:
+        if self.transform_type == 'resize':
             transform = Compose([
                 Resize((self.img_size, self.img_size)),
                 RandomHorizontalFlip(flip_p),
                 ToTensor(),
                 Normalize([0.5] * 3, [0.5] * 3),
             ])
-        elif self.transform_type == 'none':
+        elif self.transform_type == 'none' or self.transform_type is None:
             transform = None
         else:
             raise ValueError(f'Invalid transform_type: {self.transform_type}')
