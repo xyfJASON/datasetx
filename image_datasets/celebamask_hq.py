@@ -8,12 +8,12 @@ from typing import Optional, Callable
 import torch
 import torchvision.transforms as T
 import torchvision.transforms.functional as TF
-from torch.utils.data import Dataset
+from torchvision.datasets import VisionDataset
 
 from .utils import extract_images
 
 
-class CelebAMaskHQ(Dataset):
+class CelebAMaskHQ(VisionDataset):
     """The CelebAMask-HQ Dataset.
 
     CelebAMask-HQ is a large-scale face image dataset that has 30,000 high-resolution face images
@@ -26,7 +26,7 @@ class CelebAMaskHQ(Dataset):
     scripts to use multiprocessing and put it at scripts/celebamask_hq_generate_mask.py. The processed
     masks will be stored under CelebAMask-HQ-mask and CelebAMask-HQ-mask-color.
 
-    To load data with this class, the dataset should be organized in the following structure:
+    Please organize the dataset in the following file structure:
 
     root
     ├── CelebA-HQ-img
@@ -50,32 +50,28 @@ class CelebAMaskHQ(Dataset):
     The train/valid/test sets are split according to the original CelebA dataset, resulting in
     24,183 training images, 2,993 validation images, and 2,824 test images.
 
-    This class has one pre-defined transform:
-      - 'resize' (default): Resize the image directly to the target size
-
     References:
       - https://paperswithcode.com/dataset/celebamask-hq
       - https://github.com/switchablenorms/CelebAMask-HQ
 
     """
+
     def __init__(
             self,
             root: str,
-            img_size: int,
             split: str = 'train',
-            transform_type: Optional[str] = 'resize',
-            transform: Optional[Callable] = None,
+            transforms: Optional[Callable] = None,
     ):
+        super().__init__(root=root, transforms=transforms)
         if split not in ['train', 'valid', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
-        if transform_type not in ['resize', 'none'] and transform_type is not None:
-            raise ValueError(f'Invalid transform_type: {transform_type}')
+        self.split = split
 
-        root = os.path.expanduser(root)
-        image_root = os.path.join(root, 'CelebA-HQ-img')
-        mask_root = os.path.join(root, 'CelebAMask-HQ-mask')
-        mask_color_root = os.path.join(root, 'CelebAMask-HQ-mask-color')
-        mapping_file = os.path.join(root, 'CelebA-HQ-to-CelebA-mapping.txt')
+        # Check file structure
+        image_root = os.path.join(self.root, 'CelebA-HQ-img')
+        mask_root = os.path.join(self.root, 'CelebAMask-HQ-mask')
+        mask_color_root = os.path.join(self.root, 'CelebAMask-HQ-mask-color')
+        mapping_file = os.path.join(self.root, 'CelebA-HQ-to-CelebA-mapping.txt')
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
         if not os.path.isdir(mask_root):
@@ -84,14 +80,6 @@ class CelebAMaskHQ(Dataset):
             raise ValueError(f'{mask_color_root} is not an existing directory')
         if not os.path.isfile(mapping_file):
             raise ValueError(f'{mapping_file} is not an existing file')
-
-        self.root = root
-        self.img_size = img_size
-        self.split = split
-        self.transform_type = transform_type
-        self.transform = transform
-        if transform is None:
-            self.transform = self.get_transform()
 
         # Read the mapping file
         mapping = pd.read_table(mapping_file, sep=r'\s+', index_col=0)
@@ -105,6 +93,7 @@ class CelebAMaskHQ(Dataset):
             k = 0 if split == 'train' else (1 if split == 'valid' else 2)
             return celeba_splits[k] <= orig_idx < celeba_splits[k+1]
 
+        # Extract image paths
         self.img_paths = extract_images(image_root)
         self.mask_paths = extract_images(mask_root)
         self.mask_color_paths = extract_images(mask_color_root)
@@ -119,24 +108,9 @@ class CelebAMaskHQ(Dataset):
         X = Image.open(self.img_paths[item])
         mask = Image.open(self.mask_paths[item])
         mask_color = Image.open(self.mask_color_paths[item])
-        if self.transform is not None:
-            X, mask, mask_color = self.transform(X, mask, mask_color)
+        if self.transforms is not None:
+            X, mask, mask_color = self.transforms(X, mask, mask_color)
         return X, mask, mask_color
-
-    def get_transform(self):
-        flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
-        if self.transform_type == 'resize':
-            transform = Compose([
-                Resize((self.img_size, self.img_size)),
-                RandomHorizontalFlip(flip_p),
-                ToTensor(),
-                Normalize([0.5] * 3, [0.5] * 3),
-            ])
-        elif self.transform_type == 'none' or self.transform_type is None:
-            transform = None
-        else:
-            raise ValueError(f'Invalid transform_type: {self.transform_type}')
-        return transform
 
 
 # ===============================================================================================

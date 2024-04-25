@@ -10,10 +10,10 @@ authors = [
 ]
 description = "Build image datasets based on torch and torchvision"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 dependencies = [
-    "torch",
-    "torchvision",
+    "torch>=2.1.0",
+    "torchvision>=0.16.0",
     "numpy",
     "pandas",
     "Pillow",

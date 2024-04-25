@@ -2,13 +2,12 @@ import os
 from PIL import Image
 from typing import Optional, Callable
 
-import torchvision.transforms as T
-from torch.utils.data import Dataset
+from torchvision.datasets import VisionDataset
 
 from .utils import extract_images
 
 
-class CelebAHQ(Dataset):
+class CelebAHQ(VisionDataset):
     """The CelebA-HQ Dataset.
 
     The CelebA-HQ dataset is a high-quality version of CelebA that consists of 30,000 images at 1024×1024 resolution.
@@ -18,10 +17,10 @@ class CelebAHQ(Dataset):
     files from the official GitHub repository. Then use dataset_tool.py to generate the high-quality images.
 
     However, I personally recommend downloading the CelebAMask-HQ dataset, which contains processed CelebA-HQ images.
-    Nevertheless, the filenames in CelebAMask-HQ are sorted from 0 to 29999, which is inconsistent with the original
-    CelebA filenames. I provide a python script (scripts/celebahq_map_filenames.py) to help convert the filenames.
+    Note that the filenames in CelebAMask-HQ are sorted from 0 to 29999, which is inconsistent with the original CelebA
+    filenames. A python script (`scripts/celebahq_map_filenames.py`) is provided to help convert the filenames.
 
-    To load data with this class, the dataset should be organized in the following structure:
+    Please organize the dataset in the following file structure:
 
     root
     ├── CelebA-HQ-img
@@ -30,11 +29,8 @@ class CelebAHQ(Dataset):
     │   └── 202591.jpg
     └── CelebA-HQ-to-CelebA-mapping.txt
 
-    The train/valid/test sets are split according to the original CelebA dataset,
-    resulting in 24,183 training images, 2,993 validation images, and 2,824 test images.
-
-    This class has one pre-defined transform:
-      - 'resize' (default): Resize the image directly to the target size
+    The train/valid/test sets are split according to the original CelebA dataset, resulting in 24,183 training images,
+    2,993 validation images, and 2,824 test images.
 
     References:
       - https://github.com/tkarras/progressive_growing_of_gans
@@ -42,31 +38,23 @@ class CelebAHQ(Dataset):
       - https://github.com/switchablenorms/CelebAMask-HQ
 
     """
+
     def __init__(
             self,
             root: str,
-            img_size: int,
             split: str = 'train',
-            transform_type: Optional[str] = 'resize',
-            transform: Optional[Callable] = None,
+            transforms: Optional[Callable] = None,
     ):
+        super().__init__(root=root, transforms=transforms)
+
         if split not in ['train', 'valid', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
-        if transform_type not in ['resize', 'none'] and transform_type is not None:
-            raise ValueError(f'Invalid transform_type: {transform_type}')
+        self.split = split
 
-        root = os.path.expanduser(root)
-        image_root = os.path.join(root, 'CelebA-HQ-img')
+        # Extract image paths
+        image_root = os.path.join(self.root, 'CelebA-HQ-img')
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
-
-        self.root = root
-        self.img_size = img_size
-        self.split = split
-        self.transform_type = transform_type
-        self.transform = transform
-        if transform is None:
-            self.transform = self.get_transform()
 
         def filter_func(p):
             if split == 'all':
@@ -81,23 +69,8 @@ class CelebAHQ(Dataset):
     def __len__(self):
         return len(self.img_paths)
 
-    def __getitem__(self, item):
-        X = Image.open(self.img_paths[item])
-        if self.transform is not None:
-            X = self.transform(X)
-        return X
-
-    def get_transform(self):
-        flip_p = 0.5 if self.split in ['train', 'all'] else 0.0
-        if self.transform_type == 'resize':
-            transform = T.Compose([
-                T.Resize((self.img_size, self.img_size), antialias=True),
-                T.RandomHorizontalFlip(flip_p),
-                T.ToTensor(),
-                T.Normalize([0.5] * 3, [0.5] * 3),
-            ])
-        elif self.transform_type == 'none' or self.transform_type is None:
-            transform = None
-        else:
-            raise ValueError(f'Invalid transform_type: {self.transform_type}')
-        return transform
+    def __getitem__(self, index: int):
+        x = Image.open(self.img_paths[index]).convert('RGB')
+        if self.transforms is not None:
+            x = self.transforms(x)
+        return x
