@@ -17,10 +17,10 @@ class ImageNet(VisionDataset):
     │   ├── n01440764
     │   ├── ...
     │   └── n15075141
-    ├── val (or valid)
-    │   ├── ILSVRC2012_val_00000001.JPEG
+    ├── val
+    │   ├── n01440764
     │   ├── ...
-    │   └── ILSVRC2012_val_00050000.JPEG
+    │   └── n15075141
     └── test
         ├── ILSVRC2012_test_00000001.JPEG
         ├── ...
@@ -28,6 +28,8 @@ class ImageNet(VisionDataset):
 
     References:
       - https://image-net.org/challenges/LSVRC/2012/2012-downloads.php
+      - https://gist.github.com/BIGBALLON/8a71d225eff18d88e469e6ea9b39cef4
+      - https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh
 
     """
 
@@ -44,18 +46,24 @@ class ImageNet(VisionDataset):
         self.split = split
 
         # Extract image paths
-        image_root = os.path.join(self.root, split)
-        if split == 'valid' and not os.path.isdir(image_root):
-            image_root = os.path.join(self.root, 'val')
+        image_root = os.path.join(self.root, split if split != 'valid' else 'val')
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
         self.img_paths = extract_images(image_root)
+
+        # Extract class labels
+        self.classes = None
+        if self.split != 'test':
+            class_names = [path.split('/')[-2] for path in self.img_paths]
+            sorted_classes = {x: i for i, x in enumerate(sorted(set(class_names)))}
+            self.classes = [sorted_classes[x] for x in class_names]
 
     def __len__(self):
         return len(self.img_paths)
 
     def __getitem__(self, index: int):
         x = Image.open(self.img_paths[index]).convert('RGB')
+        y = self.classes[index] if self.classes is not None else None
         if self.transforms is not None:
             x = self.transforms(x)
-        return x
+        return x, y
