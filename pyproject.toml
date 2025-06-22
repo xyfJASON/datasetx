@@ -17,6 +17,7 @@ dependencies = [
     "numpy",
     "pandas",
     "Pillow",
+    "h5py",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

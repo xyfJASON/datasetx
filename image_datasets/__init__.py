@@ -3,6 +3,7 @@ from .celebahq import CelebAHQ
 from .celebamask_hq import CelebAMaskHQ
 from .danbooru2019_portraits import Danbooru2019Portraits
 from .ffhq import FFHQ
+from .hypersim import Hypersim
 from .iharmony4 import iHarmony4
 from .imagenet import ImageNet
 from .places365 import Places365
