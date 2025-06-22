@@ -10,13 +10,6 @@ from .utils import extract_images
 class AFHQ(VisionDataset):
     """The Animal Faces-HQ (AFHQ) Dataset.
 
-    Animal FacesHQ (AFHQ) is a dataset of animal faces consisting of 15,000 high-quality images at 512 × 512
-    resolution. The dataset includes three domains of cat, dog, and wildlife, each providing 5000 images.
-    By having multiple (three) domains and diverse images of various breeds (≥ eight) per each domain, AFHQ
-    sets a more challenging image-to-image translation problem. All images are vertically and horizontally
-    aligned to have the eyes at the center. The low-quality images were discarded by human effort.
-    (Copied from PapersWithCode)
-
     Please organize the dataset in the following file structure:
 
     root

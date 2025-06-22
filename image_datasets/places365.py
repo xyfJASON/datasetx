@@ -8,12 +8,6 @@ from torchvision.datasets import VisionDataset
 class Places365(VisionDataset):
     """The Places365 dataset.
 
-    The Places365 dataset is a scene recognition dataset. It is composed of 10 million images comprising 434 scene
-    classes. There are two versions of the dataset: Places365-Standard with 1.8 million train and 36000 validation
-    images from K=365 scene classes, and Places365-Challenge-2016, in which the size of the training set is increased
-    up to 6.2 million extra images, including 69 new scene classes (leading to a total of 8 million train images from
-    434 scene classes). (Copied from PapersWithCode)
-
     Please organize the dataset in the following file structure:
 
     root

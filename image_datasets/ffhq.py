@@ -10,17 +10,6 @@ from .utils import extract_images
 class FFHQ(VisionDataset):
     """The Flickr-Faces-HQ (FFHQ) Dataset.
 
-    Flickr-Faces-HQ (FFHQ) consists of 70,000 high-quality PNG images at 1024×1024 resolution and contains
-    considerable variation in terms of age, ethnicity and image background. It also has good coverage of
-    accessories such as eyeglasses, sunglasses, hats, etc. The images were crawled from Flickr, thus inheriting
-    all the biases of that website, and automatically aligned and cropped using dlib. Only images under
-    permissive licenses were collected. Various automatic filters were used to prune the set, and finally
-    Amazon Mechanical Turk was used to remove the occasional statues, paintings, or photos of photos.
-    (Copied from PapersWithCode)
-
-    There are several versions of the dataset in the official Google Drive link, among which `images1024x1024`
-    is the most widely used one.
-
     Please organize the dataset in the following file structure:
 
     root

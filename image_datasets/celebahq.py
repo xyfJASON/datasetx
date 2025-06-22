@@ -10,16 +10,6 @@ from .utils import extract_images
 class CelebAHQ(VisionDataset):
     """The CelebA-HQ Dataset.
 
-    The CelebA-HQ dataset is a high-quality version of CelebA that consists of 30,000 images at 1024×1024 resolution.
-    (Copied from PaperWithCode)
-
-    The official way to prepare the dataset is to download img_celeba.7z from the original CelebA dataset and the delta
-    files from the official GitHub repository. Then use dataset_tool.py to generate the high-quality images.
-
-    However, I personally recommend downloading the CelebAMask-HQ dataset, which contains processed CelebA-HQ images.
-    Note that the filenames in CelebAMask-HQ are sorted from 0 to 29999, which is inconsistent with the original CelebA
-    filenames. A python script (`scripts/celebahq_map_filenames.py`) is provided to help convert the filenames.
-
     Please organize the dataset in the following file structure:
 
     root

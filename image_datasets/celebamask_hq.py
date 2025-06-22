@@ -16,16 +16,6 @@ from .utils import extract_images
 class CelebAMaskHQ(VisionDataset):
     """The CelebAMask-HQ Dataset.
 
-    CelebAMask-HQ is a large-scale face image dataset that has 30,000 high-resolution face images
-    selected from the CelebA dataset by following CelebA-HQ. Each image has segmentation mask of
-    facial attributes corresponding to CelebA. (Copied from PaperWithCode)
-
-    The authors provided black-white masks for each attribute under CelebAMask-HQ-mask-anno, and some
-    scripts (https://github.com/switchablenorms/CelebAMask-HQ/tree/master/face_parsing) to generate
-    index mask images (pixel value represents class label) and colorful mask images. I adpated the
-    scripts to use multiprocessing and put it at scripts/celebamask_hq_generate_mask.py. The processed
-    masks will be stored under CelebAMask-HQ-mask and CelebAMask-HQ-mask-color.
-
     Please organize the dataset in the following file structure:
 
     root
