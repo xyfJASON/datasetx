@@ -60,7 +60,7 @@ root
 ```python
 from torchvision.datasets import CIFAR10
 
-root = '~/data/CIFAR-10/'  # path to the dataset
+root = '~/data/CIFAR-10'  # path to the dataset
 train_set = CIFAR10(root=root, train=True)
 test_set = CIFAR10(root=root, train=False)
 print(len(train_set))  # 50000

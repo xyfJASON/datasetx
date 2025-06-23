@@ -48,7 +48,7 @@ root
 ```python
 from image_datasets import CelebAHQ
 
-root = '~/data/CelebA-HQ/'  # path to the dataset
+root = '~/data/CelebA-HQ'  # path to the dataset
 train_set = CelebAHQ(root=root, split='train')
 valid_set = CelebAHQ(root=root, split='valid')
 test_set = CelebAHQ(root=root, split='test')

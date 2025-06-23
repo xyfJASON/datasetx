@@ -93,7 +93,7 @@ root
 ```python
 from image_datasets import Places365
 
-root = '~/data/Places365/'  # path to downloaded dataset
+root = '~/data/Places365'  # path to downloaded dataset
 train_set = Places365(root=root, split='train', small=True)
 valid_set = Places365(root=root, split='valid', small=True)
 test_set = Places365(root=root, split='test', small=True)

@@ -101,7 +101,7 @@ python scripts/hypersim_filter_invalid.py \
 ```python
 from image_datasets import Hypersim
 
-root = '~/data/Hypersim/'  # path to the dataset
+root = '~/data/Hypersim'  # path to the dataset
 csv_file = '~/data/Hypersim/metadata_images_split_scene_v1_filtered.csv'  # path to the metadata CSV file
 train_set = Hypersim(root=root, csv_file=csv_file, split='train')
 valid_set = Hypersim(root=root, csv_file=csv_file, split='valid')

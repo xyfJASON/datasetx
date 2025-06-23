@@ -70,7 +70,7 @@ root
 from image_datasets import CelebAMaskHQ
 from image_datasets.celebamask_hq import Compose, Resize, ToTensor, Normalize
 
-root = '~/data/CelebAMask-HQ/'  # path to the dataset
+root = '~/data/CelebAMask-HQ'  # path to the dataset
 
 transforms = Compose([
     Resize((512, 512)),

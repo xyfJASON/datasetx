@@ -69,7 +69,7 @@ root
 ```python
 from image_datasets import FFHQ
 
-root = '~/data/FFHQ/'  # path to the dataset
+root = '~/data/FFHQ'  # path to the dataset
 train_set = FFHQ(root=root, split='train')
 test_set = FFHQ(root=root, split='test')
 all_set = FFHQ(root=root, split='all')

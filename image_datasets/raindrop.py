@@ -13,12 +13,6 @@ from .utils import extract_images
 class Raindrop(VisionDataset):
     """The Raindrop Dataset.
 
-    Raindrop is a set of image pairs, where each pair contains exactly the same background scene, yet one is degraded
-    by raindrops and the other one is free from raindrops. To obtain this, the images are captured through two pieces
-    of exactly the same glass: one sprayed with water, and the other is left clean. The dataset consists of 1,119 pairs
-    of images, with various background scenes and raindrops. They were captured with a Sony A6000 and a Canon EOS 60.
-    (Copied from PaperWithCode)
-
     Please organize the dataset in the following file structure:
 
     root
