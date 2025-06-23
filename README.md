@@ -10,6 +10,6 @@ This package extends `torchvision.datasets` in the following ways:
 pip install git+https://github.com/xyfJASON/image-datasets.git
 ```
 
-## Wiki Page
+## Documentation
 
-Please see [Wiki](https://github.com/xyfJASON/image-datasets/wiki) page for detailed instructions on each dataset.
+Please see [docs](./docs) for detailed instructions on each dataset.
