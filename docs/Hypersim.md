@@ -24,8 +24,6 @@ Download and unzip the dataset using [this script](https://github.com/apple/ml-h
 
 ### File structure
 
-Please organize the downloaded dataset in the following file structure:
-
 ```text
 root
 ├── metadata_images_split_scene_v1.csv
