@@ -18,6 +18,7 @@ dependencies = [
     "pandas",
     "Pillow",
     "h5py",
+    "opencv-python",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
