@@ -2,6 +2,7 @@ from .ade20k import SceneParse150
 from .afhq import AFHQ
 from .celebahq import CelebAHQ
 from .celebamask_hq import CelebAMaskHQ
+from .coco2014_captions import COCO2014Captions
 from .danbooru2019_portraits import Danbooru2019Portraits
 from .dsine_normal_eval import DSINENormalEval
 from .ffhq import FFHQ
