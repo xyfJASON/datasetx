@@ -14,7 +14,7 @@ from torchvision.datasets import VisionDataset
 
 
 class DSINENormalEval(VisionDataset):
-    """Dataset for Surface Normal Estimation.
+    """Dataset for evaluating Surface Normal Estimation.
 
     Please organize the dataset in the following file structure:
 
@@ -47,6 +47,7 @@ class DSINENormalEval(VisionDataset):
 
     References:
       - https://github.com/baegwangbin/DSINE
+      - https://github.com/EnVision-Research/Lotus/tree/main/evaluation/dataset_normal
 
     """
 

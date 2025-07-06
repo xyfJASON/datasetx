@@ -95,9 +95,9 @@ class CelebAMaskHQ(VisionDataset):
         return len(self.img_paths)
 
     def __getitem__(self, item):
-        X = Image.open(self.img_paths[item])
-        mask = Image.open(self.mask_paths[item])
-        mask_color = Image.open(self.mask_color_paths[item])
+        X = Image.open(self.img_paths[item]).convert('RGB')
+        mask = Image.open(self.mask_paths[item]).convert('L')
+        mask_color = Image.open(self.mask_color_paths[item]).convert('RGB')
         if self.transforms is not None:
             X, mask, mask_color = self.transforms(X, mask, mask_color)
         return X, mask, mask_color
