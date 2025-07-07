@@ -9,5 +9,6 @@ from .ffhq import FFHQ
 from .hypersim import Hypersim
 from .iharmony4 import iHarmony4
 from .imagenet import ImageNet
+from .marigold_depth_eval import MarigoldDepthEval
 from .places365 import Places365
 from .raindrop import Raindrop
