@@ -40,7 +40,7 @@ class TestMarigoldDepthEval(unittest.TestCase):
     def test_kitti(self):
         dataset = MarigoldDepthEval(self.root, dataset='kitti')
         # check length
-        self.assertEqual(len(dataset), 697)
+        self.assertEqual(len(dataset), 652)
         # check data, (image, depth, mask)
         data = dataset[0]
         self.assertIsInstance(data, tuple)

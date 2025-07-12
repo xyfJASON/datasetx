@@ -12,7 +12,7 @@ It includes 5 sub-datasets: NYUv2, KITTI, ETH3D, ScanNet, and DIODE.
 | Dataset | Numbers | Resolution |
 |:-------:|:-------:|:----------:|
 |  NYUv2  |   654   |  640×480   |
-|  KITTI  |   697   | 1216×352\* |
+|  KITTI  |   652   | 1216×352\* |
 |  ETH3D  |   454   | 6048×4032  |
 | ScanNet |   800   |  640×480   |
 |  DIODE  |   771   |  1024×768  |

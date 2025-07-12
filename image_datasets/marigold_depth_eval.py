@@ -79,10 +79,12 @@ class MarigoldDepthEval(VisionDataset):
             self.min_depth = 0.6
             self.max_depth = 350
         else:
-            raise ValueError(f"Unsupported dataset: {self.dataset}")
+            raise ValueError(f'Unsupported dataset: {self.dataset}')
 
-        with open(txt_file, "r") as f:
+        with open(txt_file, 'r') as f:
             self.filenames = [s.split() for s in f.readlines()]
+        if self.dataset.lower() == 'kitti':
+            self.filenames = [f for f in self.filenames if f[1] != 'None']
 
         self.tar_obj = tarfile.open(tar_file)
 
@@ -103,22 +105,22 @@ class MarigoldDepthEval(VisionDataset):
 
         # read depth, (1, H, W), torch.float32, [0, inf]
         depth = self.tar_obj.extractfile('./' + depth_rel_path).read()
-        if self.dataset == 'nyuv2':
+        if self.dataset.lower() == 'nyuv2':
             depth = np.array(Image.open(io.BytesIO(depth))) / 1000.0
-        elif self.dataset == 'kitti':
+        elif self.dataset.lower() == 'kitti':
             depth = np.array(Image.open(io.BytesIO(depth))) / 256.0
-        elif self.dataset == 'eth3d':
+        elif self.dataset.lower() == 'eth3d':
             depth = np.frombuffer(depth, dtype=np.float32).copy()
             depth[depth == torch.inf] = 0.0
             depth = depth.reshape((4032, 6048))
-        elif self.dataset == 'scannet':
+        elif self.dataset.lower() == 'scannet':
             depth = np.array(Image.open(io.BytesIO(depth))) / 1000.0
-        elif self.dataset == 'diode':
+        elif self.dataset.lower() == 'diode':
             depth = np.load(io.BytesIO(depth))
         depth = torch.from_numpy(depth.squeeze()[None, :, :]).float()
 
         # kitti: crop to benchmark size
-        if self.dataset == 'kitti':
+        if self.dataset.lower() == 'kitti':
             KB_CROP_HEIGHT = 352
             KB_CROP_WIDTH = 1216
             height, width = depth.shape[-2:]
@@ -129,11 +131,11 @@ class MarigoldDepthEval(VisionDataset):
 
         # get mask, (1, H, W), torch.bool
         mask = torch.logical_and((depth > self.min_depth), (depth < self.max_depth)).bool()
-        if self.dataset == 'nyuv2':
+        if self.dataset.lower() == 'nyuv2':
             eval_mask = torch.zeros_like(mask).bool()
             eval_mask[:, 45:471, 41:601] = 1
             mask = torch.logical_and(mask, eval_mask)
-        elif self.dataset == 'kitti':
+        elif self.dataset.lower() == 'kitti':
             eval_mask = torch.zeros_like(mask).bool()
             _, gt_height, gt_width = eval_mask.shape
             eval_mask[:,
@@ -141,7 +143,7 @@ class MarigoldDepthEval(VisionDataset):
                 int(0.0359477 * gt_width) : int(0.96405229 * gt_width),
             ] = 1
             mask = torch.logical_and(mask, eval_mask)
-        elif self.dataset == 'diode':
+        elif self.dataset.lower() == 'diode':
             mask_rel_path = self.filenames[index][2]
             mask = self.tar_obj.extractfile('./' + mask_rel_path).read()
             mask = np.load(io.BytesIO(mask)).squeeze()[None, :, :].astype(bool)
