@@ -3,10 +3,10 @@ import h5py
 import numpy as np
 import pandas as pd
 from PIL import Image
-from typing import Callable, Optional
 
 import torch
 from torch.utils.data import Dataset
+from torchvision.transforms.functional import to_tensor
 
 
 class Hypersim(Dataset):
@@ -28,42 +28,46 @@ class Hypersim(Dataset):
 
     """
 
+    FILES = {
+        'image': ('final_preview', 'tonemap.jpg'),
+        'color': ('final_hdf5', 'color.hdf5'),
+        'illumination': ('final_hdf5', 'diffuse_illumination.hdf5'),
+        'reflectance': ('final_hdf5', 'diffuse_reflectance.hdf5'),
+        'residual': ('final_hdf5', 'residual.hdf5'),
+        'depth': ('geometry_hdf5', 'depth_meters.hdf5'),
+        'normal': ('geometry_hdf5', 'normal_cam.hdf5'),
+    }
+
     def __init__(
             self,
             root: str,
             csv_file: str,
             split: str = 'train',
-            transforms: Optional[Callable] = None,
     ):
         if split not in ['train', 'valid', 'val', 'test']:
             raise ValueError(f'Invalid split: {split}')
         split = 'val' if split == 'valid' else split
         self.root = os.path.expanduser(root)
-        self.transforms = transforms
 
         self.metadata = []
         data = pd.read_csv(os.path.expanduser(csv_file))
         data = data[(data['included_in_public_release'] == True) & (data['split_partition_name'] == split)]
-        for index, row in data.iterrows():
-            image_filename = f"frame.{row['frame_id']:04d}.tonemap.jpg"
-            illumination_filename = f"frame.{row['frame_id']:04d}.diffuse_illumination.jpg"
-            reflectance_filename = f"frame.{row['frame_id']:04d}.diffuse_reflectance.jpg"
-            depth_filename = f"frame.{row['frame_id']:04d}.depth_meters.hdf5"
-            normal_filename = f"frame.{row['frame_id']:04d}.normal_cam.hdf5"
-            image_path = os.path.join(self.root, row['scene_name'], 'images', f'scene_{row["camera_name"]}_final_preview', image_filename)
-            illumination_path = os.path.join(self.root, row['scene_name'], 'images', f'scene_{row["camera_name"]}_final_preview', illumination_filename)
-            reflectance_path = os.path.join(self.root, row['scene_name'], 'images', f'scene_{row["camera_name"]}_final_preview', reflectance_filename)
-            depth_path = os.path.join(self.root, row['scene_name'], 'images', f'scene_{row["camera_name"]}_geometry_hdf5', depth_filename)
-            normal_path = os.path.join(self.root, row['scene_name'], 'images', f'scene_{row["camera_name"]}_geometry_hdf5', normal_filename)
+        for _, row in data.iterrows():
+            scene_name = row['scene_name']
+            camera_name = row['camera_name']
+            frame_id = row['frame_id']
+            filepaths = {
+                f'{k}_path': os.path.join(
+                    self.root, scene_name, 'images',
+                    f'scene_{camera_name}_{v[0]}',
+                    f'frame.{frame_id:04d}.{v[1]}',
+                ) for k, v in self.FILES.items()
+            }
             self.metadata.append({
-                'scene_name': row['scene_name'],
-                'camera_name': row['camera_name'],
-                'frame_id': row['frame_id'],
-                'image_path': image_path,
-                'illumination_path': illumination_path,
-                'reflectance_path': reflectance_path,
-                'depth_path': depth_path,
-                'normal_path': normal_path,
+                'scene_name': scene_name,
+                'camera_name': camera_name,
+                'frame_id': frame_id,
+                **filepaths,
             })
 
     def __len__(self):
@@ -72,23 +76,30 @@ class Hypersim(Dataset):
     def __getitem__(self, index: int):
         metadata = self.metadata[index]
 
-        # read image, illumination, reflectance
+        # read image
         image = Image.open(metadata['image_path']).convert('RGB')
-        illumination = Image.open(metadata['illumination_path']).convert('RGB')
-        reflectance = Image.open(metadata['reflectance_path']).convert('RGB')
 
-        # read depth
-        depth_fd = h5py.File(metadata['depth_path'], 'r')
-        dist = np.array(depth_fd['dataset']).astype(float)
+        # read color, illumination, reflectance, residual
+        with h5py.File(metadata['color_path'], 'r') as f:
+            color = np.array(f['dataset']).astype(float)
+        with h5py.File(metadata['illumination_path'], 'r') as f:
+            illumination = np.array(f['dataset']).astype(float)
+        with h5py.File(metadata['reflectance_path'], 'r') as f:
+            reflectance = np.array(f['dataset']).astype(float)
+        with h5py.File(metadata['residual_path'], 'r') as f:
+            residual = np.array(f['dataset']).astype(float)
+
+        # read dist, convert to depth and disparity
+        with h5py.File(metadata['depth_path'], 'r') as f:
+            dist = np.array(f['dataset']).astype(float)
         if np.isnan(dist).any():
             raise ValueError(f"NaN in depth file: {metadata['depth_path']}")
         depth = self.dist_2_depth(dist)
-        # depth to disparity
         disparity = self.depth_2_disparity(depth)
 
         # read normal
-        normal_fd = h5py.File(metadata['normal_path'], 'r')
-        normal = np.array(normal_fd['dataset']).astype(float)
+        with h5py.File(metadata['normal_path'], 'r') as f:
+            normal = np.array(f['dataset']).astype(float)
         if np.isnan(normal).any():
             raise ValueError(f"NaN in normal file: {metadata['normal_path']}")
         normal[:,:,0] *= -1
@@ -96,10 +107,11 @@ class Hypersim(Dataset):
         normal = self.align_normals(normal, depth, [886.81, 886.81, W/2, H/2], H, W)
 
         # transform to torch tensors
-        if self.transforms is not None:
-            image = self.transforms(image)
-            illumination = self.transforms(illumination)
-            reflectance = self.transforms(reflectance)
+        image = to_tensor(image)
+        color = torch.from_numpy(color).permute(2, 0, 1).float()
+        illumination = torch.from_numpy(illumination).permute(2, 0, 1).float()
+        reflectance = torch.from_numpy(reflectance).permute(2, 0, 1).float()
+        residual = torch.from_numpy(residual).permute(2, 0, 1).float()
         depth = torch.from_numpy(depth).float()
         disparity = torch.from_numpy(disparity).float()
         normal = torch.from_numpy(normal).permute(2, 0, 1).float().clamp(-1, 1)
@@ -109,8 +121,10 @@ class Hypersim(Dataset):
             camera_name=metadata['camera_name'],
             frame_id=metadata['frame_id'],
             image=image,
+            color=color,
             illumination=illumination,
             reflectance=reflectance,
+            residual=residual,
             depth=depth,
             disparity=disparity,
             normal=normal,

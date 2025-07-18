@@ -98,6 +98,16 @@ class Resize:
         return image, mask
 
 
+class CenterCrop:
+    def __init__(self, size):
+        self.size = size
+
+    def __call__(self, image, mask):
+        image = TF.center_crop(image, self.size)
+        mask = TF.center_crop(mask, self.size)
+        return image, mask
+
+
 class RandomHorizontalFlip:
     def __init__(self, flip_prob):
         self.flip_prob = flip_prob
