@@ -2,12 +2,13 @@ import os
 from PIL import Image
 from typing import Optional, Callable
 
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
+from torchvision.transforms.functional import to_tensor
 
 from .utils import extract_images
 
 
-class FFHQ(VisionDataset):
+class FFHQ(Dataset):
     """The Flickr-Faces-HQ (FFHQ) Dataset.
 
     Please organize the dataset in the following file structure:
@@ -37,32 +38,36 @@ class FFHQ(VisionDataset):
             root: str,
             split: str = 'train',
             version: str = 'images1024x1024',
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
-
         if split not in ['train', 'test', 'all']:
             raise ValueError(f'Invalid split: {split}')
         if version not in ['images1024x1024', 'thumbnails128x128']:
             raise ValueError(f'Invalid version: {version}')
+        self.root = os.path.expanduser(root)
         self.split = split
         self.version = version
+        self.transform_fn = transform_fn
 
-        # Extract image paths
+        # extract image paths
         image_root = os.path.join(self.root, version)
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
-        self.img_paths = extract_images(image_root)
+        self.image_paths = extract_images(image_root)
         if split == 'train':
-            self.img_paths = list(filter(lambda p: 0 <= int(os.path.basename(p).split('.')[0]) < 60000, self.img_paths))
+            self.image_paths = list(filter(lambda p: 0 <= int(os.path.basename(p).split('.')[0]) < 60000, self.image_paths))
         elif split == 'test':
-            self.img_paths = list(filter(lambda p: 60000 <= int(os.path.basename(p).split('.')[0]) < 70000, self.img_paths))
+            self.image_paths = list(filter(lambda p: 60000 <= int(os.path.basename(p).split('.')[0]) < 70000, self.image_paths))
 
     def __len__(self):
-        return len(self.img_paths)
+        return len(self.image_paths)
 
     def __getitem__(self, index: int):
-        x = Image.open(self.img_paths[index]).convert('RGB')
-        if self.transforms is not None:
-            x = self.transforms(x)
-        return x
+        # read image
+        x = Image.open(self.image_paths[index]).convert('RGB')
+        x = to_tensor(x)
+        sample = {'image': x}
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

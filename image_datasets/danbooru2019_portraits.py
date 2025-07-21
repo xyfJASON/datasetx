@@ -2,12 +2,13 @@ import os
 from PIL import Image
 from typing import Optional, Callable
 
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
+from torchvision.transforms.functional import to_tensor
 
 from .utils import extract_images
 
 
-class Danbooru2019Portraits(VisionDataset):
+class Danbooru2019Portraits(Dataset):
     """The Danbooru2019 Portraits Dataset.
 
     The original images have black edges, which can be removed by the provided python script at
@@ -30,21 +31,26 @@ class Danbooru2019Portraits(VisionDataset):
     def __init__(
             self,
             root: str,
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
+        self.root = os.path.expanduser(root)
+        self.transform_fn = transform_fn
 
-        # Extract image paths
+        # extract image paths
         image_root = os.path.join(self.root, 'portraits')
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
-        self.img_paths = extract_images(image_root)
+        self.image_paths = extract_images(image_root)
 
     def __len__(self):
-        return len(self.img_paths)
+        return len(self.image_paths)
 
     def __getitem__(self, index: int):
-        x = Image.open(self.img_paths[index]).convert('RGB')
-        if self.transforms is not None:
-            x = self.transforms(x)
-        return x
+        # read image
+        x = Image.open(self.image_paths[index]).convert('RGB')
+        x = to_tensor(x)
+        sample = {'image': x}
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

@@ -1,4 +1,4 @@
-from .ade20k import SceneParse150
+from .ade20k_sceneparse150 import ADE20KSceneParse150
 from .afhq import AFHQ
 from .celebahq import CelebAHQ
 from .celebamask_hq import CelebAMaskHQ

@@ -101,7 +101,10 @@ test_set = ImageNet(root=root, split='test')
 print(len(train_set))  # 1281167
 print(len(valid_set))  # 50000
 print(len(test_set))   # 100000
-print(train_set[0])    # (<PIL.Image.Image image mode=RGB size=250x250 at 0x7F6263A32050>, 0)
-print(valid_set[100])  # (<PIL.Image.Image image mode=RGB size=750x550 at 0x7F638B0E3CD0>, 2)
-print(test_set[1000])  # (<PIL.Image.Image image mode=RGB size=500x391 at 0x7F6263A32050>, None)
+print(train_set[0]['image'].shape)    # (3, 250, 250)
+print(train_set[0]['label'])          # 0
+print(valid_set[100]['image'].shape)  # (3, 444, 679)
+print(valid_set[100]['label'])        # 2
+print(test_set[1000]['image'].shape)  # (3, 391, 500)
+print(test_set[1000]['label'])        # None
 ```

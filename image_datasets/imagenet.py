@@ -2,12 +2,13 @@ import os
 from PIL import Image
 from typing import Optional, Callable
 
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
+from torchvision.transforms.functional import to_tensor
 
 from .utils import extract_images
 
 
-class ImageNet(VisionDataset):
+class ImageNet(Dataset):
     """The ImageNet-1K (ILSVRC 2012) Dataset.
 
     Please organize the dataset in the following file structure:
@@ -37,33 +38,37 @@ class ImageNet(VisionDataset):
             self,
             root: str,
             split: str = 'train',
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
-
         if split not in ['train', 'valid', 'test']:
             raise ValueError(f'Invalid split: {split}')
+        self.root = os.path.expanduser(root)
         self.split = split
+        self.transform_fn = transform_fn
 
-        # Extract image paths
+        # extract image paths
         image_root = os.path.join(self.root, split if split != 'valid' else 'val')
         if not os.path.isdir(image_root):
             raise ValueError(f'{image_root} is not an existing directory')
-        self.img_paths = extract_images(image_root)
+        self.image_paths = extract_images(image_root)
 
-        # Extract class labels
+        # extract class labels
         self.classes = None
         if self.split != 'test':
-            class_names = [path.split('/')[-2] for path in self.img_paths]
+            class_names = [path.split('/')[-2] for path in self.image_paths]
             sorted_classes = {x: i for i, x in enumerate(sorted(set(class_names)))}
             self.classes = [sorted_classes[x] for x in class_names]
 
     def __len__(self):
-        return len(self.img_paths)
+        return len(self.image_paths)
 
     def __getitem__(self, index: int):
-        x = Image.open(self.img_paths[index]).convert('RGB')
+        # read image and label
+        x = Image.open(self.image_paths[index]).convert('RGB')
+        x = to_tensor(x)
         y = self.classes[index] if self.classes is not None else None
-        if self.transforms is not None:
-            x = self.transforms(x)
-        return x, y
+        sample = {'image': x, 'label': y}
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

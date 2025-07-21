@@ -64,14 +64,15 @@ root
 ### Example
 
 ```python
-from image_datasets import SceneParse150
+from image_datasets import ADE20KSceneParse150
 
 root = '~/data/ADE20K/SceneParsing'   # path to downloaded dataset
-train_set = SceneParse150(root=root, split='train')
-valid_set = SceneParse150(root=root, split='valid')
-test_set = SceneParse150(root=root, split='test')
+train_set = ADE20KSceneParse150(root=root, split='train')
+valid_set = ADE20KSceneParse150(root=root, split='valid')
+test_set = ADE20KSceneParse150(root=root, split='test')
 print(len(train_set))  # 20210
 print(len(valid_set))  # 2000
 print(len(test_set))   # 3352
-print(train_set[0])    # (<PIL.Image.Image image mode=RGB size=683x512 at 0x7F3EF3951F90>, <PIL.Image.Image image mode=L size=683x512 at 0x7F3EF2A06710>)
+print(train_set[0]['image'].shape)       # (3, 512, 683)
+print(train_set[0]['annotation'].shape)  # (512, 683)
 ```

@@ -56,5 +56,6 @@ train_set = AFHQ(root=root, split='train')
 test_set = AFHQ(root=root, split='test')
 print(len(train_set))  # 14336
 print(len(test_set))   # 1467
-print(train_set[0])    # (<PIL.PngImagePlugin.PngImageFile image mode=RGB size=512x512 at 0x7F5FE8955D10>, 0)
+print(train_set[0]['image'].shape)  # (3, 512, 512)
+print(train_set[0]['label'])  # 0
 ```

@@ -3,6 +3,7 @@ import h5py
 import numpy as np
 import pandas as pd
 from PIL import Image
+from typing import Optional, Callable
 
 import torch
 from torch.utils.data import Dataset
@@ -43,11 +44,13 @@ class Hypersim(Dataset):
             root: str,
             csv_file: str,
             split: str = 'train',
+            transform_fn: Optional[Callable] = None,
     ):
         if split not in ['train', 'valid', 'val', 'test']:
             raise ValueError(f'Invalid split: {split}')
         split = 'val' if split == 'valid' else split
         self.root = os.path.expanduser(root)
+        self.transform_fn = transform_fn
 
         self.metadata = []
         data = pd.read_csv(os.path.expanduser(csv_file))
@@ -106,7 +109,7 @@ class Hypersim(Dataset):
         H, W = normal.shape[:2]
         normal = self.align_normals(normal, depth, [886.81, 886.81, W/2, H/2], H, W)
 
-        # transform to torch tensors
+        # convert to tensors
         image = to_tensor(image)
         color = torch.from_numpy(color).permute(2, 0, 1).float()
         illumination = torch.from_numpy(illumination).permute(2, 0, 1).float()
@@ -116,7 +119,7 @@ class Hypersim(Dataset):
         disparity = torch.from_numpy(disparity).float()
         normal = torch.from_numpy(normal).permute(2, 0, 1).float().clamp(-1, 1)
 
-        return dict(
+        sample = dict(
             scene_name=metadata['scene_name'],
             camera_name=metadata['camera_name'],
             frame_id=metadata['frame_id'],
@@ -129,6 +132,11 @@ class Hypersim(Dataset):
             disparity=disparity,
             normal=normal,
         )
+
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample
 
     @staticmethod
     def dist_2_depth(distance: np.ndarray, width: int = 1024, height: int = 768, flt_focal: float = 886.81):

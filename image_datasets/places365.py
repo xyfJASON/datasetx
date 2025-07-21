@@ -2,10 +2,11 @@ import os
 from PIL import Image
 from typing import Optional, Callable
 
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
+from torchvision.transforms.functional import to_tensor
 
 
-class Places365(VisionDataset):
+class Places365(Dataset):
     """The Places365 dataset.
 
     Please organize the dataset in the following file structure:
@@ -53,17 +54,17 @@ class Places365(VisionDataset):
             split: str = 'train',
             small: bool = False,
             is_challenge: bool = False,
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
-
         if split not in ['train', 'valid', 'test']:
             raise ValueError(f'Invalid split: {split}')
+        self.root = os.path.expanduser(root)
         self.split = split
         self.small = small
         self.is_challenge = is_challenge
+        self.transform_fn = transform_fn
 
-        # Get image root
+        # get image root
         size = '256' if small else 'large'
         variant = 'challenge' if is_challenge else 'standard'
         if split == 'train':
@@ -77,7 +78,7 @@ class Places365(VisionDataset):
         if not os.path.isdir(img_root):
             raise ValueError(f'{img_root} is not an existing directory')
 
-        # Load classes
+        # load classes
         self.class_to_idx = dict()
         with open(os.path.join(self.root, 'categories_places365.txt'), 'r') as f:
             for line in f:
@@ -85,7 +86,7 @@ class Places365(VisionDataset):
                 self.class_to_idx[name] = int(idx)
         self.classes = sorted(self.class_to_idx.keys())
 
-        # Load meta file
+        # load meta file
         if split == 'train':
             metafile = os.path.join(self.root, f'places365_train_{variant}.txt')
         elif split == 'valid':
@@ -97,8 +98,8 @@ class Places365(VisionDataset):
         if not os.path.isfile(metafile):
             raise ValueError(f'{metafile} is not an existing file')
 
-        # Extract image paths & labels
-        self.img_paths, self.labels = [], []
+        # extract image paths & labels
+        self.image_paths, self.labels = [], []
         with open(metafile, 'r') as f:
             for line in f:
                 if split in ['train', 'valid']:
@@ -109,14 +110,19 @@ class Places365(VisionDataset):
                 img_path = os.path.join(img_root, img_path.lstrip('/'))
                 if not os.path.isfile(img_path):
                     raise ValueError(f'{img_path} is not an existing file')
-                self.img_paths.append(img_path)
+                self.image_paths.append(img_path)
                 self.labels.append(label)
 
     def __len__(self):
-        return len(self.img_paths)
+        return len(self.image_paths)
 
     def __getitem__(self, index: int):
-        x = Image.open(self.img_paths[index]).convert('RGB')
-        if self.transforms is not None:
-            x = self.transforms(x)
-        return x, self.labels[index]
+        # read image and label
+        x = Image.open(self.image_paths[index]).convert('RGB')
+        x = to_tensor(x)
+        y = self.labels[index]
+        sample = {'image': x, 'label': y}
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

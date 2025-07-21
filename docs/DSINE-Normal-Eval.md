@@ -71,28 +71,40 @@ dsine_eval_sintel = DSINENormalEval(root=root, dataset='sintel')
 dsine_eval_vkitti = DSINENormalEval(root=root, dataset='vkitti')
 dsine_eval_oasis = DSINENormalEval(root=root, dataset='oasis')
 
-print(len(dsine_eval_nyuv2))  # 654
+print(len(dsine_eval_nyuv2))    # 654
 print(len(dsine_eval_scannet))  # 300
-print(len(dsine_eval_ibims))  # 100
-print(len(dsine_eval_sintel))  # 1064
-print(len(dsine_eval_vkitti))  # 1000
-print(len(dsine_eval_oasis))  # 10000
+print(len(dsine_eval_ibims))    # 100
+print(len(dsine_eval_sintel))   # 1064
+print(len(dsine_eval_vkitti))   # 1000
+print(len(dsine_eval_oasis))    # 10000
 
-image, normal, mask = dsine_eval_nyuv2[0]
-print(image.shape, normal.shape, mask.shape)  # (3, 480, 640) (3, 480, 640) (1, 480, 640)
+sample = dsine_eval_nyuv2[0]
+print(sample['image'].shape)   # (3, 480, 640)
+print(sample['normal'].shape)  # (3, 480, 640)
+print(sample['mask'].shape)    # (1, 480, 640)
 
-image, normal, mask = dsine_eval_scannet[0]
-print(image.shape, normal.shape, mask.shape)  # (3, 480, 640) (3, 480, 640) (1, 480, 640)
+sample = dsine_eval_scannet[0]
+print(sample['image'].shape)   # (3, 480, 640)
+print(sample['normal'].shape)  # (3, 480, 640)
+print(sample['mask'].shape)    # (1, 480, 640)
 
-image, normal, mask = dsine_eval_ibims[0]
-print(image.shape, normal.shape, mask.shape)  # (3, 480, 640) (3, 480, 640) (1, 480, 640)
+sample = dsine_eval_ibims[0]
+print(sample['image'].shape)   # (3, 480, 640)
+print(sample['normal'].shape)  # (3, 480, 640)
+print(sample['mask'].shape)    # (1, 480, 640)
 
-image, normal, mask = dsine_eval_sintel[0]
-print(image.shape, normal.shape, mask.shape)  # (3, 436, 1024) (3, 436, 1024) (1, 436, 1024)
+sample = dsine_eval_sintel[0]
+print(sample['image'].shape)   # (3, 436, 1024)
+print(sample['normal'].shape)  # (3, 436, 1024)
+print(sample['mask'].shape)    # (1, 436, 1024)
 
-image, normal, mask = dsine_eval_vkitti[0]
-print(image.shape, normal.shape, mask.shape)  # (3, 375, 1242) (3, 375, 1242) (1, 375, 1242)
+sample = dsine_eval_vkitti[0]
+print(sample['image'].shape)   # (3, 375, 1242)
+print(sample['normal'].shape)  # (3, 375, 1242)
+print(sample['mask'].shape)    # (1, 375, 1242)
 
-image, normal, mask = dsine_eval_oasis[0]
-print(image.shape, normal.shape, mask.shape)  # (3, 607, 1024) (3, 607, 1024) (1, 607, 1024)
+sample = dsine_eval_oasis[0]
+print(sample['image'].shape)   # (3, 607, 1024)
+print(sample['normal'].shape)  # (3, 607, 1024)
+print(sample['mask'].shape)    # (1, 607, 1024)
 ```

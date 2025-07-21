@@ -8,12 +8,10 @@ from pathlib import Path
 from typing import Callable, Optional
 
 import torch
-import torch.nn.functional as F
-import torchvision.transforms.functional as TF
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
 
 
-class DSINENormalEval(VisionDataset):
+class DSINENormalEval(Dataset):
     """Dataset for evaluating Surface Normal Estimation.
 
     Please organize the dataset in the following file structure:
@@ -55,11 +53,13 @@ class DSINENormalEval(VisionDataset):
             self,
             root: str,
             dataset: str = 'nyuv2',
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
+        self.root = os.path.expanduser(root)
         self.dataset = dataset
+        self.transform_fn = transform_fn
 
+        # extract image paths
         if self.dataset.lower() == 'nyuv2':
             self.image_paths = list(map(str, Path(os.path.join(self.root, 'nyuv2', 'test')).rglob('*_img.png')))
         elif self.dataset.lower() == 'scannet':
@@ -105,7 +105,8 @@ class DSINENormalEval(VisionDataset):
         elif self.dataset.lower() == 'oasis':
             normal_path = image_path.replace('_img.png', '_normal.pkl')
             h, w = image.shape[:2]
-            normal_dict = pickle.load(open(normal_path, 'rb'))
+            with open(normal_path, 'rb') as f:
+                normal_dict = pickle.load(f)
             normal, mask = np.zeros((h, w, 3)), np.zeros((h, w))
             # stuff ROI normal into bounding box
             min_y = normal_dict['min_y']
@@ -132,47 +133,9 @@ class DSINENormalEval(VisionDataset):
         image = torch.from_numpy(image).permute(2, 0, 1).float()
         normal = torch.from_numpy(normal).permute(2, 0, 1).float()
         mask = torch.from_numpy(mask).permute(2, 0, 1).bool()
+        sample = {'image': image, 'normal': normal, 'mask': mask}
 
-        # apply transforms
-        if self.transforms is not None:
-            image, normal, mask = self.transforms(image, normal, mask)
-
-        return image, normal, mask
-
-
-# ===============================================================================================
-# Below are custom transforms that apply to image, normal and mask simultaneously
-# Adapted from https://github.com/pytorch/vision/blob/main/references/segmentation/transforms.py
-# ===============================================================================================
-
-class Compose:
-    def __init__(self, transforms):
-        self.transforms = transforms
-
-    def __call__(self, image, normal, mask):
-        for t in self.transforms:
-            image, normal, mask = t(image, normal, mask)
-        return image, normal, mask
-
-
-class Resize:
-    def __init__(self, size):
-        self.size = size
-        if isinstance(size, int):
-            self.size = (size, size)
-
-    def __call__(self, image, normal, mask):
-        image = F.interpolate(image.unsqueeze(0), size=self.size, mode='bilinear', align_corners=False, antialias=True).squeeze(0)
-        normal = F.interpolate(normal.unsqueeze(0), size=self.size, mode='nearest').squeeze(0)
-        mask = F.interpolate(mask.unsqueeze(0).float(), size=self.size, mode='nearest').squeeze(0) > 0.5
-        return image, normal, mask
-
-
-class Normalize:
-    def __init__(self, mean, std):
-        self.mean = mean
-        self.std = std
-
-    def __call__(self, image, normal, mask):
-        image = TF.normalize(image, mean=self.mean, std=self.std)
-        return image, normal, mask
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

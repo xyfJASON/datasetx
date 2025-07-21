@@ -76,5 +76,5 @@ all_set = FFHQ(root=root, split='all')
 print(len(train_set))  # 60000
 print(len(test_set))   # 10000
 print(len(all_set))    # 70000
-print(train_set[0])    # <PIL.PngImagePlugin.PngImageFile image mode=RGB size=1024x1024 at 0x7FD1B8BF1A50>
+print(train_set[0]['image'].shape)  # (3, 1024, 1024)
 ```

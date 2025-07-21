@@ -6,12 +6,10 @@ from PIL import Image
 from typing import Callable, Optional
 
 import torch
-import torch.nn.functional as F
-import torchvision.transforms.functional as TF
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
 
 
-class MarigoldDepthEval(VisionDataset):
+class MarigoldDepthEval(Dataset):
     """Dataset for evaluating Affine-Invariant Depth Estimation.
 
     Please organize the dataset in the following file structure:
@@ -48,11 +46,13 @@ class MarigoldDepthEval(VisionDataset):
             self,
             root: str,
             dataset: str = 'nyuv2',
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
+        self.root = os.path.expanduser(root)
         self.dataset = dataset
+        self.transform_fn = transform_fn
 
+        # get file paths
         if self.dataset.lower() == 'nyuv2':
             tar_file = os.path.join(self.root, 'nyuv2', 'nyu_labeled_extracted.tar')
             txt_file = os.path.join(self.root, 'nyuv2', 'filename_list_test.txt')
@@ -81,6 +81,7 @@ class MarigoldDepthEval(VisionDataset):
         else:
             raise ValueError(f'Unsupported dataset: {self.dataset}')
 
+        # read filenames
         with open(txt_file, 'r') as f:
             self.filenames = [s.split() for s in f.readlines()]
         if self.dataset.lower() == 'kitti':
@@ -149,46 +150,9 @@ class MarigoldDepthEval(VisionDataset):
             mask = np.load(io.BytesIO(mask)).squeeze()[None, :, :].astype(bool)
             mask = torch.from_numpy(mask).bool()
 
-        # apply transforms
-        if self.transforms is not None:
-            image, depth, mask = self.transforms(image, depth, mask)
+        sample = {'image': image, 'depth': depth, 'mask': mask}
 
-        return image, depth, mask
-
-
-# ===============================================================================================
-# Below are custom transforms that apply to image, depth and mask simultaneously
-# Adapted from https://github.com/pytorch/vision/blob/main/references/segmentation/transforms.py
-# ===============================================================================================
-
-class Compose:
-    def __init__(self, transforms):
-        self.transforms = transforms
-
-    def __call__(self, image, depth, mask):
-        for t in self.transforms:
-            image, depth, mask = t(image, depth, mask)
-        return image, depth, mask
-
-
-class Resize:
-    def __init__(self, size):
-        self.size = size
-        if isinstance(size, int):
-            self.size = (size, size)
-
-    def __call__(self, image, depth, mask):
-        image = F.interpolate(image.unsqueeze(0), size=self.size, mode='bilinear', align_corners=False, antialias=True).squeeze(0)
-        depth = F.interpolate(depth.unsqueeze(0), size=self.size, mode='nearest').squeeze(0)
-        mask = F.interpolate(mask.unsqueeze(0).float(), size=self.size, mode='nearest').squeeze(0) > 0.5
-        return image, depth, mask
-
-
-class Normalize:
-    def __init__(self, mean, std):
-        self.mean = mean
-        self.std = std
-
-    def __call__(self, image, depth, mask):
-        image = TF.normalize(image, mean=self.mean, std=self.std)
-        return image, depth, mask
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

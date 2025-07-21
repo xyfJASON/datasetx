@@ -100,7 +100,10 @@ test_set = Places365(root=root, split='test', small=True)
 print(len(train_set))  # 1803460
 print(len(valid_set))  # 36500
 print(len(test_set))   # 328500
-print(train_set[0])    # (<PIL.Image.Image image mode=RGB size=256x256 at 0x7FD8EE031C10>, 0)
-print(valid_set[100])  # (<PIL.Image.Image image mode=RGB size=256x256 at 0x7FCDF70A2E50>, 296)
-print(test_set[1000])  # (<PIL.Image.Image image mode=RGB size=256x256 at 0x7FCDF70A2E50>, None)
+print(train_set[0]['image'].shape)    # (3, 256, 256)
+print(train_set[0]['label'])          # 0
+print(valid_set[100]['image'].shape)  # (3, 256, 256)
+print(valid_set[100]['label'])        # 296
+print(test_set[1000]['image'].shape)  # (3, 256, 256)
+print(test_set[1000]['label'])        # None
 ```

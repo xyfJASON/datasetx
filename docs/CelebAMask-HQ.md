@@ -68,27 +68,20 @@ root
 
 ```python
 from image_datasets import CelebAMaskHQ
-from image_datasets.celebamask_hq import Compose, Resize, ToTensor, Normalize
 
 root = '~/data/CelebAMask-HQ'  # path to the dataset
-
-transforms = Compose([
-    Resize((512, 512)),
-    ToTensor(),
-    Normalize(mean=[0.5] * 3, std=[0.5] * 3),
-])
-
-train_set = CelebAMaskHQ(root=root, split='train', transforms=transforms)
-valid_set = CelebAMaskHQ(root=root, split='valid', transforms=transforms)
-test_set = CelebAMaskHQ(root=root, split='test', transforms=transforms)
-all_set = CelebAMaskHQ(root=root, split='all', transforms=transforms)
-
+train_set = CelebAMaskHQ(root=root, split='train')
+valid_set = CelebAMaskHQ(root=root, split='valid')
+test_set = CelebAMaskHQ(root=root, split='test')
+all_set = CelebAMaskHQ(root=root, split='all')
 print(len(train_set))  # 24183
 print(len(valid_set))  # 2993
 print(len(test_set))   # 2824
 print(len(all_set))    # 30000
-
-print(train_set[0][0].shape, train_set[0][0].dtype)  # image: (3, 512, 512), torch.float32
-print(train_set[0][1].shape, train_set[0][1].dtype)  # index mask: (512, 512), torch.int64
-print(train_set[0][2].shape, train_set[0][2].dtype)  # color mask: (3, 512, 512), torch.float32
+print(train_set[0]['image'].shape)       # (3, 1024, 1024)
+print(train_set[0]['image'].dtype)       # torch.float32
+print(train_set[0]['mask'].shape)        # (512, 512)
+print(train_set[0]['mask'].dtype)        # torch.int64
+print(train_set[0]['mask_color'].shape)  # (3, 512, 512)
+print(train_set[0]['mask_color'].dtype)  # torch.float32
 ```

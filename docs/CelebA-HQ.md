@@ -57,5 +57,5 @@ print(len(train_set))  # 24183
 print(len(valid_set))  # 2993
 print(len(test_set))   # 2824
 print(len(all_set))    # 30000
-print(train_set[0])    # <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=1024x1024 at 0x7F6AE3628A90>
+print(train_set[0]['image'].shape)  # (3, 1024, 1024)
 ```

@@ -76,5 +76,6 @@ testb_set = Raindrop(root=root, split='test_b')
 print(len(train_set))  # 861
 print(len(testa_set))  # 58
 print(len(testb_set))  # 249
-print(train_set[0])    # (<PIL.Image.Image image mode=RGB size=720x480 at 0x7FAAEF6C8BD0>, <PIL.Image.Image image mode=RGB size=720x480 at 0x7FAAF10DFB90>)
+print(train_set[0]['image'].shape)  # (3, 480, 720)
+print(train_set[0]['gt'].shape)     # (3, 480, 720)
 ```

@@ -3,10 +3,11 @@ import json
 from PIL import Image
 from typing import Optional, Callable
 
-from torchvision.datasets import VisionDataset
+from torch.utils.data import Dataset
+from torchvision.transforms.functional import to_tensor
 
 
-class COCO2014Captions(VisionDataset):
+class COCO2014Captions(Dataset):
     """COCO 2014 caption dataset with Karpathy split.
 
     Please organize the dataset in the following file structure:
@@ -48,14 +49,14 @@ class COCO2014Captions(VisionDataset):
             self,
             root: str,
             split: str = 'train',
-            transforms: Optional[Callable] = None,
+            transform_fn: Optional[Callable] = None,
     ):
-        super().__init__(root=root, transforms=transforms)
+        self.root = os.path.expanduser(root)
+        self.split = 'val' if split == 'valid' else split
+        self.transform_fn = transform_fn
 
         with open(os.path.join(self.root, 'karpathy', 'dataset_coco.json'), 'r') as f:
             self.metadata = json.load(f)['images']
-
-        self.split = 'val' if split == 'valid' else split
         if self.split == 'train':
             self.metadata = [data for data in self.metadata if data['split'] in ['train', 'restval']]
         elif self.split == 'val':
@@ -69,10 +70,15 @@ class COCO2014Captions(VisionDataset):
         return len(self.metadata)
 
     def __getitem__(self, index: int):
+        # read image and captions
         metadata = self.metadata[index]
         image_path = os.path.join(self.root, metadata['filepath'], metadata['filename'])
         image = Image.open(image_path).convert('RGB')
         captions = [caption['raw'] for caption in metadata['sentences']]
-        if self.transforms is not None:
-            image = self.transforms(image)
-        return image, captions
+        # convert image to tensor
+        image = to_tensor(image)
+        sample = {'image': image, 'captions': captions}
+        # apply transform
+        if self.transform_fn is not None:
+            sample = self.transform_fn(sample)
+        return sample

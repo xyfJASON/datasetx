@@ -84,14 +84,28 @@ print(len(dsine_eval_eth3d))    # 454
 print(len(dsine_eval_scannet))  # 800
 print(len(dsine_eval_diode))    # 771
 
-image, depth, mask = dsine_eval_nyuv2[0]
-print(image.shape, depth.shape, mask.shape)  # (3, 480, 640) (1, 480, 640) (1, 480, 640)
-image, depth, mask = dsine_eval_kitti[0]
-print(image.shape, depth.shape, mask.shape)  # (3, 352, 1216) (1, 352, 1216) (1, 352, 1216)
-image, depth, mask = dsine_eval_eth3d[0]
-print(image.shape, depth.shape, mask.shape)  # (3, 4032, 6048) (1, 4032, 6048) (1, 4032, 6048)
-image, depth, mask = dsine_eval_scannet[0]
-print(image.shape, depth.shape, mask.shape)  # (3, 480, 640) (1, 480, 640) (1, 480, 640)
-image, depth, mask = dsine_eval_diode[0]
-print(image.shape, depth.shape, mask.shape)  # (3, 768, 1024) (1, 768, 1024) (1, 768, 1024)
+sample = dsine_eval_nyuv2[0]
+print(sample['image'].shape)  # (3, 480, 640)
+print(sample['depth'].shape)  # (1, 480, 640)
+print(sample['mask'].shape)   # (1, 480, 640)
+
+sample = dsine_eval_kitti[0]
+print(sample['image'].shape)  # (3, 352, 1216)
+print(sample['depth'].shape)  # (1, 352, 1216)
+print(sample['mask'].shape)   # (1, 352, 1216)
+
+sample = dsine_eval_eth3d[0]
+print(sample['image'].shape)  # (3, 4032, 6048)
+print(sample['depth'].shape)  # (1, 4032, 6048)
+print(sample['mask'].shape)   # (1, 4032, 6048)
+
+sample = dsine_eval_scannet[0]
+print(sample['image'].shape)  # (3, 480, 640)
+print(sample['depth'].shape)  # (1, 480, 640)
+print(sample['mask'].shape)   # (1, 480, 640)
+
+sample = dsine_eval_diode[0]
+print(sample['image'].shape)  # (3, 768, 1024)
+print(sample['depth'].shape)  # (1, 768, 1024)
+print(sample['mask'].shape)   # (1, 768, 1024)
 ```
