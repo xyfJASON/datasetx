@@ -97,7 +97,7 @@ python scripts/hypersim_filter_invalid.py \
 ### Example
 
 ```python
-from image_datasets import Hypersim
+from datasetx import Hypersim
 
 root = '~/data/Hypersim'  # path to the dataset
 csv_file = '~/data/Hypersim/metadata_images_split_scene_v1_filtered.csv'  # path to the metadata CSV file

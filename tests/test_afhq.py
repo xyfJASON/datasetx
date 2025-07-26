@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms as T
 from torch import Tensor
 
-from image_datasets import AFHQ
+from datasetx import AFHQ
 
 
 class TestAFHQ(unittest.TestCase):

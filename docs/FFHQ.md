@@ -67,7 +67,7 @@ root
 ### Example
 
 ```python
-from image_datasets import FFHQ
+from datasetx import FFHQ
 
 root = '~/data/FFHQ'  # path to the dataset
 train_set = FFHQ(root=root, split='train')

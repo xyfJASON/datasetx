@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms as T
 from torch import Tensor
 
-from image_datasets import ImageNet
+from datasetx import ImageNet
 
 
 class TestImageNet(unittest.TestCase):

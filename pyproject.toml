@@ -3,17 +3,19 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "image_datasets"
+name = "datasetx"
 version = "0.0.1"
+description = "Commonly used datasets based on torch and torchvision"
 authors = [
   { name="xyfJASON", email="xyfjason@gmail.com" },
 ]
-description = "Build image datasets based on torch and torchvision"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
+
 dependencies = [
-    "torch>=2.1.0",
-    "torchvision>=0.16.0",
+    "torch>=2.4.1",
+    "torchvision>=0.19.1",
+    "torchaudio>=2.4.1",
     "numpy",
     "pandas",
     "Pillow",
@@ -27,5 +29,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/xyfJASON/image-datasets"
-"Bug Tracker" = "https://github.com/xyfJASON/image-datasets/issues"
+Homepage = "https://github.com/xyfJASON/datasetx"
+Issues = "https://github.com/xyfJASON/datasetx/issues"

@@ -1,13 +1,16 @@
-# image-datasets
+<h1 style="text-align: center">datasetx</h1>
 
-This package extends `torchvision.datasets` in the following ways:
- - Adds some commonly used datasets that are not available in `torchvision.datasets`, such as FFHQ.
- - Some datasets are not fully supported by `torchvision.datasets`. For example, `torchvision.datasets.ImageNet` does not support loading the test split of ImageNet.
+This package implements commonly used datasets based on `torch` and `torchvision`.
+
+The API mostly follows `torchvision.datasets`, with several key differences:
+ - Samples are returned as dictionaries rather than tuples, making them easier to understand.
+ - Transform functions also take dictionaries as input, providing greater flexibility.
+ - Images are represented as torch Tensors in the \[0,1\] range by default, instead of PIL Images.
 
 ## Installation
 
 ```shell
-pip install git+https://github.com/xyfJASON/image-datasets.git
+pip install git+https://github.com/xyfJASON/datasetx.git
 ```
 
 ## Documentation

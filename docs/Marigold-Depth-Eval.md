@@ -69,7 +69,7 @@ root
 ### Example
 
 ```python
-from image_datasets import MarigoldDepthEval
+from datasetx import MarigoldDepthEval
 
 root = '~/data/marigold'  # path to the dataset
 dsine_eval_nyuv2 = MarigoldDepthEval(root=root, dataset='nyuv2')

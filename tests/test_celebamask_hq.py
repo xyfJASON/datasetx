@@ -6,7 +6,7 @@ import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch import Tensor
 
-from image_datasets import CelebAMaskHQ
+from datasetx import CelebAMaskHQ
 
 
 class TestCelebAHQ(unittest.TestCase):

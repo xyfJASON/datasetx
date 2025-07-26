@@ -61,7 +61,7 @@ root
 ### Example
 
 ```python
-from image_datasets import DSINENormalEval
+from datasetx import DSINENormalEval
 
 root = '~/data/dsine_eval'  # path to the dataset
 dsine_eval_nyuv2 = DSINENormalEval(root=root, dataset='nyuv2')

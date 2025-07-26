@@ -67,7 +67,7 @@ root
 ### Example
 
 ```python
-from image_datasets import CelebAMaskHQ
+from datasetx import CelebAMaskHQ
 
 root = '~/data/CelebAMask-HQ'  # path to the dataset
 train_set = CelebAMaskHQ(root=root, split='train')

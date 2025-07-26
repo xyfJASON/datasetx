@@ -1,6 +1,6 @@
 import unittest
 import torch
-from image_datasets import Hypersim
+from datasetx import Hypersim
 
 
 class TestHypersim(unittest.TestCase):

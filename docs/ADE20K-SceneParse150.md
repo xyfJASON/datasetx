@@ -64,7 +64,7 @@ root
 ### Example
 
 ```python
-from image_datasets import ADE20KSceneParse150
+from datasetx import ADE20KSceneParse150
 
 root = '~/data/ADE20K/SceneParsing'   # path to downloaded dataset
 train_set = ADE20KSceneParse150(root=root, split='train')

@@ -49,7 +49,7 @@ root
 ### Example
 
 ```python
-from image_datasets import AFHQ
+from datasetx import AFHQ
 
 root = '~/data/AFHQ'   # path to downloaded dataset
 train_set = AFHQ(root=root, split='train')

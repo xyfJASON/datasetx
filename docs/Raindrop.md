@@ -67,7 +67,7 @@ root
 ### Example
 
 ```python
-from image_datasets import Raindrop
+from datasetx import Raindrop
 
 root = '~/data/Raindrop'  # path to downloaded dataset
 train_set = Raindrop(root=root, split='train')

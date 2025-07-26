@@ -6,7 +6,7 @@ import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch import Tensor
 
-from image_datasets import ADE20KSceneParse150
+from datasetx import ADE20KSceneParse150
 
 
 class TestADE20KSceneParse150(unittest.TestCase):

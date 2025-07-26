@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torchvision.transforms.functional as TF
 from torch import Tensor
 
-from image_datasets import DSINENormalEval
+from datasetx import DSINENormalEval
 
 
 class TestDSINENormalEval(unittest.TestCase):

@@ -5,7 +5,7 @@ import torch
 import torchvision.transforms as T
 from torch import Tensor
 
-from image_datasets import COCO2014Captions
+from datasetx import COCO2014Captions
 
 
 class TestCOCO2014Captions(unittest.TestCase):

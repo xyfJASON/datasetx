@@ -92,7 +92,7 @@ wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/
 ### Example
 
 ```python
-from image_datasets import ImageNet
+from datasetx import ImageNet
 
 root = '~/data/ImageNet/ILSVRC2012/Images'  # path to downloaded dataset
 train_set = ImageNet(root=root, split='train')

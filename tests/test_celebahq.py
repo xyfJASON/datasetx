@@ -4,7 +4,7 @@ import torch
 import torchvision.transforms as T
 from torch import Tensor
 
-from image_datasets import CelebAHQ
+from datasetx import CelebAHQ
 
 
 class TestCelebAHQ(unittest.TestCase):

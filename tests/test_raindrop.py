@@ -6,7 +6,7 @@ import torchvision.transforms as T
 import torchvision.transforms.functional as TF
 from torch import Tensor
 
-from image_datasets import Raindrop
+from datasetx import Raindrop
 
 
 class TestRaindrop(unittest.TestCase):

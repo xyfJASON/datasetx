@@ -91,7 +91,7 @@ root
 ### Example
 
 ```python
-from image_datasets import Places365
+from datasetx import Places365
 
 root = '~/data/Places365'  # path to downloaded dataset
 train_set = Places365(root=root, split='train', small=True)
