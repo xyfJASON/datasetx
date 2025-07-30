@@ -22,40 +22,41 @@ class DreamBooth(Dataset):
     Reference:
       - https://github.com/google/dreambooth
       - https://huggingface.co/datasets/google/dreambooth
+      - https://github.com/xichenpan/Kosmos-G/blob/main/scripts/remove_dreambench_multiimg.sh
 
     """
 
     name2info = {
         'backpack': ('backpack', '02'),
-        'backpack_dog': ('backpack', '00'),
-        'bear_plushie': ('stuffed animal', '00'),
-        'berry_bowl': ('bowl', '00'),
-        'can': ('can', '00'),
-        'candle': ('candle', '01'),
-        'cat': ('cat', '01'),
+        'backpack_dog': ('backpack', '02'),
+        'bear_plushie': ('stuffed animal', '03'),
+        'berry_bowl': ('bowl', '02'),
+        'can': ('can', '01'),
+        'candle': ('candle', '02'),
+        'cat': ('cat', '04'),
         'cat2': ('cat', '02'),
         'clock': ('clock', '03'),
         'colorful_sneaker': ('sneaker', '01'),
         'dog': ('dog', '02'),
         'dog2': ('dog', '02'),
-        'dog3': ('dog', '03'),
-        'dog5': ('dog', '02'),
+        'dog3': ('dog', '05'),
+        'dog5': ('dog', '00'),
         'dog6': ('dog', '02'),
-        'dog7': ('dog', '03'),
-        'dog8': ('dog', '01'),
+        'dog7': ('dog', '01'),
+        'dog8': ('dog', '04'),
         'duck_toy': ('toy', '01'),
-        'fancy_boot': ('boot', '03'),
-        'grey_sloth_plushie': ('stuffed animal', '01'),
+        'fancy_boot': ('boot', '02'),
+        'grey_sloth_plushie': ('stuffed animal', '04'),
         'monster_toy': ('toy', '04'),
-        'pink_sunglasses': ('glasses', '01'),
-        'poop_emoji': ('toy', '04'),
-        'rc_car': ('toy', '01'),
+        'pink_sunglasses': ('glasses', '04'),
+        'poop_emoji': ('toy', '00'),
+        'rc_car': ('toy', '03'),
         'red_cartoon': ('cartoon', '00'),
-        'robot_toy': ('toy', '01'),
-        'shiny_sneaker': ('sneaker', '04'),
-        'teapot': ('teapot', '00'),
-        'vase': ('vase', '00'),
-        'wolf_plushie': ('stuffed animal', '00'),
+        'robot_toy': ('toy', '00'),
+        'shiny_sneaker': ('sneaker', '01'),
+        'teapot': ('teapot', '04'),
+        'vase': ('vase', '02'),
+        'wolf_plushie': ('stuffed animal', '04'),
     }
 
     object_prompts = [
