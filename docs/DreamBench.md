@@ -1,4 +1,4 @@
-# DreamBooth
+# DreamBench
 
 [GitHub](https://github.com/google/dreambooth) | [Hugging Face](https://huggingface.co/datasets/google/dreambooth)
 
@@ -20,7 +20,7 @@ The dataset includes 30 subjects of 15 different classes. 9 out of these subject
 
 ```shell
 # download from GitHub
-git clone https://github.com/google/dreambooth.git
+git clone https://github.com/google/dreambooth.git dreambench
 
 # or download from Hugging Face
 huggingface-cli download google/dreambooth --repo-type dataset --local-dir .
@@ -42,10 +42,10 @@ root
 ### Example
 
 ```python
-from datasetx import DreamBooth
+from datasetx import DreamBench
 
-root = '~/data/dreambooth'   # path to downloaded dataset
-dataset = DreamBooth(root=root)
+root = '~/data/dreambench'  # path to downloaded dataset
+dataset = DreamBench(root=root)
 print(len(dataset))  # 750
 print(dataset[0]['image'].shape)  # (3, 1280, 1280)
 print(dataset[0]['prompt'])  # a backpack in the jungle

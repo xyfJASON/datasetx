@@ -6,8 +6,8 @@ from torch.utils.data import Dataset
 from torchvision.transforms.functional import to_tensor
 
 
-class DreamBooth(Dataset):
-    """The DreamBooth Dataset.
+class DreamBench(Dataset):
+    """The DreamBooth Benchmark Dataset.
 
     Please organize the dataset in the following file structure:
 

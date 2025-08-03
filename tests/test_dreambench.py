@@ -4,16 +4,16 @@ import torch
 import torchvision.transforms as T
 from torch import Tensor
 
-from datasetx import DreamBooth
+from datasetx import DreamBench
 
 
-class TestDreamBooth(unittest.TestCase):
+class TestDreamBench(unittest.TestCase):
 
-    root = '~/data/dreambooth'
+    root = '~/data/dreambench'
 
     @classmethod
     def setUpClass(cls):
-        print('\n\033[92m' + 'Testing DreamBooth dataset...' + '\033[0m')
+        print('\n\033[92m' + 'Testing DreamBench dataset...' + '\033[0m')
 
     def check_sample(self, sample: dict, size: int = None):
         # check sample, {image, prompt}
@@ -32,19 +32,19 @@ class TestDreamBooth(unittest.TestCase):
         self.assertIsInstance(prompt, str)
 
     def test_dataset(self):
-        dataset = DreamBooth(self.root)
+        dataset = DreamBench(self.root)
         self.assertEqual(len(dataset), 750)
         self.check_sample(dataset[0])
 
     def test_transform_fn(self):
-        dataset = DreamBooth(
+        dataset = DreamBench(
             root=self.root,
-            transform_fn=DreamBoothTransform(size=512),
+            transform_fn=DreamBenchTransform(size=512),
         )
         self.check_sample(dataset[0], size=512)
 
 
-class DreamBoothTransform:
+class DreamBenchTransform:
     def __init__(self, size: int = 512):
         self.image_transform = T.Compose([
             T.Resize((size, size), antialias=True),

@@ -1,4 +1,4 @@
-<h1 style="text-align: center">datasetx</h1>
+<h1 align="center">datasetx</h1>
 
 This package implements commonly used datasets based on `torch` and `torchvision`.
 
