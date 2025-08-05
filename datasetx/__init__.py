@@ -13,3 +13,4 @@ from .imagenet import ImageNet
 from .marigold_depth_eval import MarigoldDepthEval
 from .places365 import Places365
 from .raindrop import Raindrop
+from .soundnet import SoundNet
